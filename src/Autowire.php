@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace Cekta\DISimpleCache;
 
 use Cekta\DI\Exception\NotFound;
-use Cekta\DI\Provider\Autowire\Reflection;
+use Cekta\DI\Provider\Autowire\ReflectionClass;
 use Cekta\DI\ProviderInterface;
 use Psr\Container\ContainerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
-use ReflectionClass;
 use ReflectionException;
 
 class Autowire implements ProviderInterface
@@ -29,7 +28,7 @@ class Autowire implements ProviderInterface
         try {
             if (!$this->cache->has($name)) {
                 $class = new ReflectionClass($name);
-                $this->cache->set($name, Reflection::getDependecies($class));
+                $this->cache->set($name, $class->readDependecies());
             }
             $args = [];
             foreach ($this->cache->get($name) as $dependency) {
